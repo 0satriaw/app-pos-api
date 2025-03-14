@@ -32,6 +32,10 @@ public class Product {
     @Column(nullable = false)
     private Integer stock;
 
+    @ManyToOne
+    @JoinColumn(name = "store_id", nullable = false)
+    private Store store;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

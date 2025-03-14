@@ -1,48 +1,64 @@
 package sawi.saas.pos.controller;
 
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import sawi.saas.pos.dto.ApiResponse;
+import sawi.saas.pos.dto.UserRequest;
+import sawi.saas.pos.entity.Role;
 import sawi.saas.pos.entity.User;
 import sawi.saas.pos.service.UserService;
+import sawi.saas.pos.validation.ValidationGroups;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("api/users")
-
+@RequiredArgsConstructor
 public class UserController {
  @Autowired
     private UserService userService;
 
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<List<User>>> getAllUsers() {
         List<User> users = userService.findAllUsers();
-        return ResponseEntity.ok(users);
+        return ResponseEntity.ok(new ApiResponse<>(true, "Users fetched successfully", users));
     }
+
     @GetMapping("/{email}")
-    public User getUserByEmail(@PathVariable String email) {
-        return userService.findByEmail(email);
+    @PreAuthorize("hasAnyRole('ADMIN', 'OWNER')")
+    public ResponseEntity<ApiResponse<User>> getUserByEmail(@PathVariable String email) {
+        User user = userService.findByEmail(email);
+        return ResponseEntity.ok(new ApiResponse<>(true, "User found", user));
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        User createdUser = userService.createUser(user);
-        return ResponseEntity.ok(createdUser);
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<User>> createUser(@Validated(ValidationGroups.Create.class) @RequestBody UserRequest request) {
+        User createdUser = userService.createUser(request);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ApiResponse<>(true, "User created successfully", createdUser));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody User user) {
-        User updatedUser = userService.updateUser(id, user);
-        return ResponseEntity.ok(updatedUser);
+    @PreAuthorize("hasAnyRole('ADMIN', 'OWNER')")
+    public ResponseEntity<ApiResponse<User>> updateUser(@PathVariable String id, @Validated(ValidationGroups.Update.class) @RequestBody UserRequest request) {
+        User updatedUser = userService.updateUser(id, request);
+        return ResponseEntity.ok(new ApiResponse<>(true, "User updated successfully", updatedUser));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable String id) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<String>> deleteUser(@PathVariable String id) {
         userService.deleteUser(id);
-        return ResponseEntity.ok("Deleted User : " + id +" succesfully");
-
+        return ResponseEntity.ok(new ApiResponse<>(true, "User deleted successfully", null));
     }
 
 }

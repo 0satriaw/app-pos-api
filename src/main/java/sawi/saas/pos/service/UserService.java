@@ -3,8 +3,12 @@ package sawi.saas.pos.service;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import sawi.saas.pos.dto.UserRequest;
+import sawi.saas.pos.entity.Role;
 import sawi.saas.pos.entity.User;
+import sawi.saas.pos.repository.RoleRepository;
 import sawi.saas.pos.repository.UserRepository;
 
 import java.util.List;
@@ -15,7 +19,22 @@ public class UserService {
     @Autowired
     private  UserRepository userRepository;
 
-    public User createUser(User user){
+    @Autowired
+    private RoleRepository roleRepository;
+
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    public User createUser(UserRequest request){
+        User user = new User();
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setName(request.getName());
+
+        Role role = roleRepository.findByName(request.getRole())
+                .orElseThrow(() -> new EntityNotFoundException("Role not found"));
+
+        user.setRole(role);
+
         return userRepository.save(user);
     }
 
@@ -34,12 +53,16 @@ public class UserService {
     }
 
     @Transactional
-    public User updateUser(String id, User user) {
+    public User updateUser(String id, UserRequest user) {
         User existingUser = getUserById(id);
 
         existingUser.setName(user.getName());
         existingUser.setEmail(user.getEmail());
-        existingUser.setPassword(user.getPassword());
+
+        Role role = roleRepository.findByName(user.getRole())
+                .orElseThrow(() -> new EntityNotFoundException("Role not found"));
+
+        existingUser.setRole(role);
 
         return userRepository.save(existingUser);
     }
