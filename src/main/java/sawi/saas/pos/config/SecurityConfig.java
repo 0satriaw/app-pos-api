@@ -40,8 +40,8 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable()) // Disable CSRF sementara
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/public/**").permitAll() // Endpoint bebas akses
                         .requestMatchers("/api/auth/**").permitAll() // Endpoint bebas akses
+                        .requestMatchers("/api/stores/**").authenticated()
                         .requestMatchers("/api/users/**").hasAnyAuthority("ADMIN", "OWNER")// Endpoint akses by admin dan owner
                         .anyRequest().authenticated() // Semua request lain harus login
                 )
