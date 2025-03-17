@@ -48,7 +48,7 @@ public class OrderController {
             @RequestParam(required = false) String status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "name") String sortBy,
+            @RequestParam(defaultValue = "status") String sortBy,
             @RequestParam(defaultValue = "asc") String sortDir
     ){
         Sort.Direction direction = sortDir.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
@@ -65,7 +65,7 @@ public class OrderController {
             @RequestParam(required = false) String status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "name") String sortBy,
+            @RequestParam(defaultValue = "status") String sortBy,
             @RequestParam(defaultValue = "asc") String sortDir
     ){
         Sort.Direction direction = sortDir.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;

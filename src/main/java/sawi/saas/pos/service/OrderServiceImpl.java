@@ -20,10 +20,7 @@ import sawi.saas.pos.repository.StoreRepository;
 import sawi.saas.pos.repository.UserRepository;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -130,11 +127,14 @@ public class OrderServiceImpl implements OrderService{
             throw new AccessDeniedException("You are not authorized to add products to this store");
         }
 
+        Date today = new Date();
+
         //Create Order
         Order order = new Order();
         order.setStatus("Pending");
         order.setStore(store);
         order.setUser(currentUser);
+        order.setOrderDate(today);
 
         //Calculate total price
         BigDecimal totalPrice = BigDecimal.ZERO;
@@ -155,12 +155,13 @@ public class OrderServiceImpl implements OrderService{
             OrderDetail orderDetail = new OrderDetail();
             orderDetail.setProduct(product);
             orderDetail.setQuantity(item.getQuantity());
-            orderDetail. setOrder(order);
+            orderDetail.setOrder(order);
+            orderDetail.setPrice(product.getPrice());
 
             BigDecimal subtotal = product.getPrice().multiply(new BigDecimal(item.getQuantity()));
             totalPrice = totalPrice.add(subtotal);
 
-            orderDetail.setTotalPrice(totalPrice);
+            orderDetail.setTotalPrice(subtotal);
             orderDetails.add(orderDetail);
 
             product.setStock(product.getStock() - item.getQuantity());
@@ -170,6 +171,7 @@ public class OrderServiceImpl implements OrderService{
 
         order.setTotalPrice(totalPrice);
         order.setOrderDetails(orderDetails);
+
 
         Order savedOrder = orderRepository.save(order);
 
