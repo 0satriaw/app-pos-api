@@ -22,16 +22,6 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class MidtransService {
-
-    @Value("${midtrans.serverKey}")
-    private String serverKey;
-
-    @Value("${midtrans.clientKey}")
-    private String clientKey;
-
-    @Value("${midtrans.baseUrl}")
-    private String baseUrl;
-
     Logger logger = LoggerFactory.getLogger(MidtransService.class);
 
 

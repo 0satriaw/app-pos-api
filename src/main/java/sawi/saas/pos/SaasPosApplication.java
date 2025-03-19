@@ -10,7 +10,7 @@ public class SaasPosApplication {
 
 	public static void main(String[] args) {
 		//		Midtrans Configuration
-		Midtrans.serverKey = "SB-Mid-server-ZdB_mQ8wQGcK9dA1pkTn9okM";
+		Midtrans.serverKey = "YOUR-CREDENTIAL-KEY";
 		Midtrans.isProduction = false;
 
 		SpringApplication.run(SaasPosApplication.class, args);

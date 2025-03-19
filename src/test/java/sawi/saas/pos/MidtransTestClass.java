@@ -14,7 +14,7 @@ import java.util.UUID;
 public class MidtransTestClass {
 
     public static void main(String[] args) throws MidtransError {
-        Midtrans.serverKey = "SB-Mid-server-ZdB_mQ8wQGcK9dA1pkTn9okM";
+        Midtrans.serverKey = "YOUR-CREDENTIAL-KEY";
         Midtrans.isProduction = false;
 
 
