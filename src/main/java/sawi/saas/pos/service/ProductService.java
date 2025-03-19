@@ -43,6 +43,12 @@ public class ProductService {
         product.setStock(productRequest.getStock());
         product.setStore(store);
 
+        if(productRequest.getImageUrl() != null) {
+            product.setImageUrl(productRequest.getImageUrl());
+        }else{
+            product.setImageUrl(null);
+        }
+
         Product savedProduct = productRepository.save(product);
         return mapToProductResponse(savedProduct);
     }
@@ -83,6 +89,12 @@ public class ProductService {
         product.setDescription(productRequest.getDescription());
         product.setPrice(productRequest.getPrice());
         product.setStock(productRequest.getStock());
+        if(productRequest.getImageUrl() != null) {
+            product.setImageUrl(productRequest.getImageUrl());
+        }else{
+            product.setImageUrl(null);
+        }
+
         Product updatedProduct = productRepository.save(product);
 
         return mapToProductResponse(updatedProduct);
@@ -108,6 +120,7 @@ public class ProductService {
                 product.getId(),
                 product.getName(),
                 product.getDescription(),
+                product.getImageUrl(),
                 product.getPrice(),
                 product.getStock(),
                 product.getStore().getId(),

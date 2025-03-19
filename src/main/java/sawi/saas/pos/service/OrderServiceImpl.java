@@ -196,6 +196,8 @@ public class OrderServiceImpl implements OrderService{
                     item.setQuantity(detail.getQuantity());
                     item.setProductId(detail.getProduct().getId().toString());
                     item.setProductName(detail.getProduct().getName());
+                    item.setProductDescription(detail.getProduct().getDescription());
+                    item.setProductImageUrl(detail.getProduct().getImageUrl());
                     item.setId(detail.getId().toString());
                     item.setPrice(detail.getProduct().getPrice());
                     item.setTotalPrice(detail.getTotalPrice());

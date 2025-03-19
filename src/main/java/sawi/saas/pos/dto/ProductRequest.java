@@ -19,6 +19,8 @@ public class ProductRequest {
 
     private String description;
 
+    private String imageUrl;
+
     @NotNull(message = "Price is required")
     @Min(value = 0, message = "Price must be greater than or equal to 0")
     private BigDecimal price;

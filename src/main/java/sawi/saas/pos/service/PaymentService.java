@@ -8,7 +8,6 @@ import sawi.saas.pos.dto.*;
 import sawi.saas.pos.entity.*;
 import sawi.saas.pos.repository.OrderRepository;
 import sawi.saas.pos.repository.PaymentRepository;
-import sawi.saas.pos.repository.ProductRepository;
 
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
@@ -53,7 +52,7 @@ public class PaymentService {
 
         Payment payment = new Payment();
         payment.setTransactionId(transactionId);
-        payment.setPaymentMethod("Midtrans");
+        payment.setPaymentMethod("MIDTRANS");
         payment.setOrder(order);
         payment.setAmount(order.getTotalPrice().setScale(0, RoundingMode.CEILING));
         payment.setCurrency("IDR");
@@ -62,7 +61,7 @@ public class PaymentService {
 
         Payment savedPayment = paymentRepository.save(payment);
         Order savedOrder = orderRepository.save(order);
-        return mapToPaymentResponse(savedPayment, order);
+        return mapToPaymentResponse(savedPayment, savedOrder);
     }
 
     @Transactional
@@ -81,11 +80,12 @@ public class PaymentService {
 
         validatePaymentStatus(status.toUpperCase());
         payment.setPaymentStatus(PaymentStatus.valueOf(status.toUpperCase()));
+        payment.setPaymentDate(LocalDateTime.now());
         Payment savedPayment = paymentRepository.save(payment);
         order.setStatus("COMPLETED");
         Order savedOrder = orderRepository.save(order);
 
-        return mapToPaymentResponse(savedPayment, order);
+        return mapToPaymentResponse(savedPayment, savedOrder);
 
     }
 

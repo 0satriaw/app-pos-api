@@ -38,6 +38,9 @@ public class Product {
     @JoinColumn(name = "store_id", nullable = false)
     private Store store;
 
+    @Column(columnDefinition = "TEXT")
+    private String imageUrl;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
