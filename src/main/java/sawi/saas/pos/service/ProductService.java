@@ -9,9 +9,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sawi.saas.pos.dto.ProductRequest;
 import sawi.saas.pos.dto.ProductResponse;
+import sawi.saas.pos.entity.Category;
 import sawi.saas.pos.entity.Product;
 import sawi.saas.pos.entity.Store;
 import sawi.saas.pos.entity.User;
+import sawi.saas.pos.repository.CategoryRepository;
 import sawi.saas.pos.repository.ProductRepository;
 import sawi.saas.pos.repository.StoreRepository;
 
@@ -23,6 +25,7 @@ import java.util.UUID;
 public class ProductService {
     private final ProductRepository productRepository;
     private final StoreRepository storeRepository;
+    private final CategoryRepository categoryRepository;
     private final UserService userService;
 
     @Transactional
@@ -30,6 +33,9 @@ public class ProductService {
         User currentUser = userService.getCurrentUser();
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new EntityNotFoundException("Store not found"));
+
+        Category category = categoryRepository.findById(UUID.fromString(productRequest.getCategoryId()))
+                .orElseThrow(() -> new EntityNotFoundException("Category not found"));
 
         if(!currentUser.getRole().getName().equals("ADMIN")
         && !store.getOwner().getId().equals(currentUser.getId())) {
@@ -42,6 +48,7 @@ public class ProductService {
         product.setPrice(productRequest.getPrice());
         product.setStock(productRequest.getStock());
         product.setStore(store);
+        product.setCategory(category);
 
         if(productRequest.getImageUrl() != null) {
             product.setImageUrl(productRequest.getImageUrl());
@@ -80,6 +87,9 @@ public class ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(()-> new EntityNotFoundException("Product not found"));
 
+        Category category = categoryRepository.findById(UUID.fromString(productRequest.getCategoryId()))
+                .orElseThrow(() -> new EntityNotFoundException("Category not found"));
+
         if(!currentUser.getRole().getName().equals("ADMIN")
                 && !product.getStore().getOwner().getId().equals(currentUser.getId())) {
             throw new AccessDeniedException("You are not authorized to add products to this store");
@@ -89,6 +99,7 @@ public class ProductService {
         product.setDescription(productRequest.getDescription());
         product.setPrice(productRequest.getPrice());
         product.setStock(productRequest.getStock());
+        product.setCategory(category);
         if(productRequest.getImageUrl() != null) {
             product.setImageUrl(productRequest.getImageUrl());
         }else{
@@ -125,6 +136,8 @@ public class ProductService {
                 product.getStock(),
                 product.getStore().getId(),
                 product.getStore().getName(),
+                product.getCategory().getId(),
+                product.getCategory().getName(),
                 product.getCreatedAt(),
                 product.getUpdatedAt()
         );

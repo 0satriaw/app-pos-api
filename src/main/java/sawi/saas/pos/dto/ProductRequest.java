@@ -21,6 +21,8 @@ public class ProductRequest {
 
     private String imageUrl;
 
+    private String categoryId;
+
     @NotNull(message = "Price is required")
     @Min(value = 0, message = "Price must be greater than or equal to 0")
     private BigDecimal price;

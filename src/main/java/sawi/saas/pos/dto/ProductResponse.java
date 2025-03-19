@@ -20,6 +20,8 @@ public class ProductResponse {
     private Integer stock;
     private UUID storeId;
     private String storeName;
+    private UUID categoryId;
+    private String categoryName;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
