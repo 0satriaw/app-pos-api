@@ -131,7 +131,7 @@ public class OrderServiceImpl implements OrderService{
 
         //Create Order
         Order order = new Order();
-        order.setStatus("Pending");
+        order.setStatus("PENDING");
         order.setStore(store);
         order.setUser(currentUser);
         order.setOrderDate(today);

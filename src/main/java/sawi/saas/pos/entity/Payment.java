@@ -32,8 +32,18 @@ public class Payment {
     @Column(nullable = false)
     private String paymentMethod;
 
-    @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime paymentDate;
+
+    @Column(nullable = false, length = 10)
+    private String currency;
+
+    @Column(nullable = false, unique = true, length = 100)
+    private String transactionId;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus paymentStatus;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

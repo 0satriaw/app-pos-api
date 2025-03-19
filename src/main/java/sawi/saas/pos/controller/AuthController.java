@@ -2,7 +2,9 @@ package sawi.saas.pos.controller;
 
 import io.lettuce.core.models.role.RedisInstance;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.BeanDefinitionDsl;
 import org.springframework.http.ResponseEntity;
@@ -31,9 +33,12 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("api/auth")
+@RequiredArgsConstructor
 public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
+    @Autowired
+    @Qualifier("customUserDetailsService")
     private final UserDetailsService userDetailsService;
 
     @Autowired
@@ -44,12 +49,6 @@ public class AuthController {
 
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public AuthController(AuthenticationManager authenticationManager, JWTUtil jwtUtil, UserDetailsService userDetailsService) {
-        this.authenticationManager = authenticationManager;
-        this.jwtUtil = jwtUtil;
-        this.userDetailsService = userDetailsService;
-        this.passwordEncoder = new BCryptPasswordEncoder();
-    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request){
