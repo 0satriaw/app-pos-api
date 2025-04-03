@@ -8,6 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import sawi.saas.pos.dto.UserRequest;
+import sawi.saas.pos.dto.UserResponse;
 import sawi.saas.pos.entity.Role;
 import sawi.saas.pos.entity.User;
 import sawi.saas.pos.repository.RoleRepository;
@@ -35,7 +36,7 @@ public class UserService {
     }
 
 
-    public User createUser(UserRequest request){
+    public UserResponse createUser(UserRequest request){
         User user = new User();
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -46,25 +47,35 @@ public class UserService {
 
         user.setRole(role);
 
-        return userRepository.save(user);
+         User savedUser = userRepository.save(user);
+
+         return mapToUserResponse(savedUser);
     }
 
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email)
+    public UserResponse findByEmail(String email) {
+         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User Not Found with email : " + email));
+
+         return mapToUserResponse(user);
     }
 
-    public List<User> findAllUsers() {
-        return userRepository.findAll();
+    public List<UserResponse> findAllUsers() {
+
+
+        List<User> allUsers =  userRepository.findAll();
+
+        return allUsers.stream().map(this::mapToUserResponse).toList();
     }
 
     public User getUserById(String id) {
-        return userRepository.findById(UUID.fromString(id))
+         return userRepository.findById(UUID.fromString(id))
                 .orElseThrow(() -> new EntityNotFoundException("User Not Found with email : " + id));
+
+
     }
 
     @Transactional
-    public User updateUser(String id, UserRequest user) {
+    public UserResponse updateUser(String id, UserRequest user) {
         User existingUser = getUserById(id);
 
         existingUser.setName(user.getName());
@@ -75,11 +86,23 @@ public class UserService {
 
         existingUser.setRole(role);
 
-        return userRepository.save(existingUser);
+        User updatedUser = userRepository.save(existingUser);
+
+        return mapToUserResponse(updatedUser);
     }
 
     public void deleteUser(String id) {
         User existingUser = getUserById(id);
         userRepository.delete(existingUser);
+    }
+
+    public UserResponse mapToUserResponse(User user) {
+        return new UserResponse(
+          user.getId(),
+          user.getEmail(),
+          user.getName(),
+          user.getRole().getId(),
+          user.getRole().getName()
+        );
     }
 }

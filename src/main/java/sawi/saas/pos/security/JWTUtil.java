@@ -26,7 +26,7 @@ public class JWTUtil {
     private UserRepository userRepository;
     private final String SECRET_KEY = Base64.getEncoder().encodeToString("AsuperStrong123!@#SuperSecureMoreLength".getBytes());
     
-    public String generateToken(Authentication authentication) {
+    public String generateToken(Authentication authentication, Date expiration) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
         User user = userRepository.findByEmail(userDetails.getUsername())
@@ -36,7 +36,7 @@ public class JWTUtil {
                 .setSubject(userDetails.getUsername())
                 .claim("role", user.getRole().getName())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis()+1000*60*60*10))
+                .setExpiration(expiration)
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
