@@ -1,6 +1,8 @@
 package sawi.saas.pos.controller;
 
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,9 +20,10 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("api/categories")
+@AllArgsConstructor
 public class CategoryController {
 
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
@@ -55,7 +58,7 @@ public class CategoryController {
 
     @DeleteMapping("/{categoryId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<CategoryResponse>> deleteStoreById(@PathVariable UUID categoryId) {
+    public ResponseEntity<ApiResponse<CategoryResponse>> deleteCategoryById(@PathVariable UUID categoryId) {
         categoryService.deleteCategory(categoryId);
         return ResponseEntity.noContent().build();
     }

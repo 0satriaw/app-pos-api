@@ -2,6 +2,8 @@ package sawi.saas.pos.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -24,6 +26,8 @@ import java.util.UUID;
 public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final UserService userService;
+
+    Logger logger = LoggerFactory.getLogger(CategoryService.class);
 
     public CategoryResponse createCategory(CategoryRequest request) {
         User currentUser = userService.getCurrentUser();
@@ -50,8 +54,8 @@ public class CategoryService {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(()-> new EntityNotFoundException("Category not found"));
 
-        if(currentUser.getRole().getName().equals("ADMIN")) {
-            throw new AccessDeniedException("You are not authorized to view this store");
+        if(!currentUser.getRole().getName().equals("ADMIN")) {
+            throw new AccessDeniedException("You are not authorized to view this category");
         }
 
         category.setName(request.getName());
@@ -69,7 +73,7 @@ public class CategoryService {
                 .orElseThrow(() -> new EntityNotFoundException("Category not found"));
 
         if (!currentUser.getRole().getName().equals("ADMIN")) {
-            throw new AccessDeniedException("You are not authorized to delete this store");
+            throw new AccessDeniedException("You are not authorized to delete this category");
         }
 
         categoryRepository.delete(category);
@@ -82,8 +86,8 @@ public class CategoryService {
 
         User currentUser = userService.getCurrentUser();
 
-        if(currentUser.getRole().getName().equals("ADMIN")) {
-            throw new AccessDeniedException("You are not authorized to view this store");
+        if(!currentUser.getRole().getName().equals("ADMIN")) {
+            throw new AccessDeniedException("You are not authorized to view this category");
         }
 
         return mapToCategory(category);
@@ -91,7 +95,9 @@ public class CategoryService {
 
     @Transactional(readOnly = true )
     public List<CategoryResponse> getAllCategory() {
+        logger.info("Fetching all categories");
         List<Category> categories = categoryRepository.findAll();
+
         return categories.stream().map(this::mapToCategory).toList();
     }
 
