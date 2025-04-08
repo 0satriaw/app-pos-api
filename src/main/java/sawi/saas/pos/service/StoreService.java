@@ -90,8 +90,13 @@ public class StoreService {
             throw new AccessDeniedException("You are not authorized to view this store");
         }
 
+        User owner  = userRepository.findById(UUID.fromString(storeRequest.getOwnerId()))
+                .orElseThrow(() -> new EntityNotFoundException("Store not found"));
+
+
         store.setName(storeRequest.getName());
         store.setAddress(storeRequest.getAddress());
+        store.setOwner(owner);
 
         Store updatedStore = storeRepository.save(store);
 

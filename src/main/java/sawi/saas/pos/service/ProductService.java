@@ -72,6 +72,20 @@ public class ProductService {
         return products.map(this::mapToProductResponse);
     }
 
+    @Transactional(readOnly = true)
+    public Page<ProductResponse> getAllStoreProducts(Pageable pageable){
+
+        Page<Product> products = productRepository.findAll(pageable);
+
+        if(products.getTotalElements() < 1) {
+            throw new EntityNotFoundException("Product not found");
+        }
+
+        return products.map(this::mapToProductResponse);
+    }
+
+
+
     @Transactional
     public ProductResponse getProductById(UUID productId) {
         Product product = productRepository.findById(productId)
