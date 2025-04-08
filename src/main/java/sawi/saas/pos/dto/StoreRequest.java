@@ -13,4 +13,6 @@ public class StoreRequest {
     private String name;
 
     private String address;
+
+    private String ownerId;
 }

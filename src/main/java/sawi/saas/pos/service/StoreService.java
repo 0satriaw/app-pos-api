@@ -37,10 +37,13 @@ public class StoreService {
             throw new IllegalArgumentException("You already have a store with this name");
         }
 
+        User owner  = userRepository.findById(UUID.fromString(storeRequest.getOwnerId()))
+                .orElseThrow(() -> new EntityNotFoundException("Store not found"));
+
         Store store = new Store();
         store.setName(storeRequest.getName());
         store.setAddress(storeRequest.getAddress());
-        store.setOwner(currentUser);
+        store.setOwner(owner);
         Store savedStore = storeRepository.save(store);
 
         return mapToStoreResponse(savedStore);

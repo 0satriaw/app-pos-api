@@ -23,6 +23,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import sawi.saas.pos.security.JWTAuthenticationFilter;
 import sawi.saas.pos.service.CustomUserDetailsService;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 
 @Configuration
 @EnableWebSecurity
@@ -38,6 +40,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(withDefaults())
                 .csrf(csrf -> csrf.disable()) // Disable CSRF sementara
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() // Endpoint bebas akses

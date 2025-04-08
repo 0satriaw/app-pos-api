@@ -40,6 +40,15 @@ public class UserController {
         return ResponseEntity.ok(new ApiResponse<>(true, "User found", user));
     }
 
+    @GetMapping("/roles/{roleName}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<ApiResponse<List<UserResponse>>> getUserByRoleName(@PathVariable String roleName) {
+        List<UserResponse> user = userService.findByRoleName(roleName);
+
+        return ResponseEntity.ok(new ApiResponse<>(true, "User found", user));
+    }
+
+
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<UserResponse>> createUser(@Validated(ValidationGroups.Create.class) @RequestBody UserRequest request) {

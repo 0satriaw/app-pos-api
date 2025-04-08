@@ -2,6 +2,8 @@ package sawi.saas.pos.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +26,8 @@ public class UserService {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    Logger logger = LoggerFactory.getLogger(UserService.class);
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -57,6 +61,15 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("User Not Found with email : " + email));
 
          return mapToUserResponse(user);
+    }
+
+    public List<UserResponse> findByRoleName(String roleName) {
+        Role role = roleRepository.findByName(roleName).orElseThrow(() -> new EntityNotFoundException("Role not found"));
+
+        List<User> allUsers = userRepository.findByRole(role);
+
+
+        return allUsers.stream().map(this::mapToUserResponse).toList();
     }
 
     public List<UserResponse> findAllUsers() {
