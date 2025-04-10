@@ -11,7 +11,6 @@ import java.util.UUID;
 
 @Repository
 public interface StoreRepository extends JpaRepository<Store, UUID> {
-    List<Store> findByOwnerId(UUID owner);
 
     Page<Store> findByOwnerId(UUID owner, Pageable pageable);
 

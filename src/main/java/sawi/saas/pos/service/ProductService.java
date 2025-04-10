@@ -18,6 +18,7 @@ import sawi.saas.pos.repository.ProductRepository;
 import sawi.saas.pos.repository.StoreRepository;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -70,6 +71,20 @@ public class ProductService {
         Page<Product> products = productRepository.findByFilters(storeId, name, minPrice, maxPrice, inStock, pageable);
 
         return products.map(this::mapToProductResponse);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductResponse> getAllOwnerProduct(UUID ownerId){
+        User currentUser = userService.getCurrentUser();
+
+        if (!currentUser.getRole().getName().equals("OWNER") &&
+                !currentUser.getId().equals(ownerId)) {
+            throw new AccessDeniedException("Only real owners and admins can get products");
+        }
+
+        List<Product> products = productRepository.findByOwnerId(ownerId);
+
+        return products.stream().map(this::mapToProductResponse).toList();
     }
 
     @Transactional(readOnly = true)

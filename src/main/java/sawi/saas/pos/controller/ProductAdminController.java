@@ -13,6 +13,7 @@ import sawi.saas.pos.dto.ProductResponse;
 import sawi.saas.pos.service.ProductService;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -33,6 +34,15 @@ public class ProductAdminController {
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
 
         Page<ProductResponse> products = productService.getAllStoreProducts(pageable);
+
+        return ResponseEntity.ok(new ApiResponse<>(true, "All products fetched successfully", products));
+    }
+
+    @PreAuthorize("hasAnyRole('OWNER')")
+    @GetMapping("/{ownerId}")
+    public ResponseEntity<ApiResponse<List<ProductResponse>>> getAllOwnerProducts(@PathVariable UUID ownerId) {
+
+        List<ProductResponse> products = productService.getAllOwnerProduct(ownerId);
 
         return ResponseEntity.ok(new ApiResponse<>(true, "All products fetched successfully", products));
     }

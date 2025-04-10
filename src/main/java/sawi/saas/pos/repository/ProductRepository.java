@@ -18,6 +18,11 @@ import java.util.UUID;
 public interface ProductRepository extends JpaRepository<Product, UUID> {
     List<Product> findByStoreId(UUID storeId);
 
+    @Query("SELECT p FROM Product p " +
+            "JOIN p.store s " +
+            "WHERE s.owner.id = :ownerId")
+    List<Product> findByOwnerId(@Param("ownerId") UUID ownerId);
+    
     Page<Product> findByStoreId(UUID storeId, Pageable pageable);
 
     @Query("SELECT p FROM Product p WHERE p.store.id = :storeId AND " +
