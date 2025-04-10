@@ -23,6 +23,8 @@ public class ProductRequest {
 
     private String categoryId;
 
+    private String storeId;
+
     @NotNull(message = "Price is required")
     @Min(value = 0, message = "Price must be greater than or equal to 0")
     private BigDecimal price;

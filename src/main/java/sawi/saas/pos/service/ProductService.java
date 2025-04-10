@@ -104,6 +104,9 @@ public class ProductService {
         Category category = categoryRepository.findById(UUID.fromString(productRequest.getCategoryId()))
                 .orElseThrow(() -> new EntityNotFoundException("Category not found"));
 
+        Store store = storeRepository.findById(UUID.fromString(productRequest.getStoreId()))
+                .orElseThrow(() -> new EntityNotFoundException("Store not found"));
+
         if(!currentUser.getRole().getName().equals("ADMIN")
                 && !product.getStore().getOwner().getId().equals(currentUser.getId())) {
             throw new AccessDeniedException("You are not authorized to add products to this store");
@@ -114,6 +117,7 @@ public class ProductService {
         product.setPrice(productRequest.getPrice());
         product.setStock(productRequest.getStock());
         product.setCategory(category);
+        product.setStore(store);
         if(productRequest.getImageUrl() != null) {
             product.setImageUrl(productRequest.getImageUrl());
         }else{
