@@ -6,6 +6,7 @@ import sawi.saas.pos.dto.OrderRequest;
 import sawi.saas.pos.dto.OrderResponse;
 import sawi.saas.pos.entity.Order;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface OrderService {
@@ -17,6 +18,8 @@ public interface OrderService {
     Page<OrderResponse> getOrdersByStore(String storeId, String status, Pageable pageable);
 
     Page<OrderResponse> getOrdersByUser(String userId, Pageable pageable);
+
+    List<OrderResponse> getOrdersByOwner(UUID ownerId);
 
     OrderResponse updateOrderStatus(String orderId, String status);
 }

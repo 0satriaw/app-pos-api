@@ -40,7 +40,7 @@ public class PaymentService {
 
         Optional<Payment> paymentCheck = paymentRepository.findByOrderId(orderId);
 
-        if(paymentCheck != null ) {
+        if(paymentCheck.isPresent()) {
             throw new IllegalArgumentException("Payment with this order already exists");
         }
 

@@ -17,6 +17,9 @@ import sawi.saas.pos.dto.OrderRequest;
 import sawi.saas.pos.dto.OrderResponse;
 import sawi.saas.pos.service.OrderService;
 
+import java.util.List;
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/orders")
 @RequiredArgsConstructor
@@ -31,6 +34,14 @@ public class OrderController {
 
         return ResponseEntity.ok(new ApiResponse<>(true, "Order created successfully", orderResponse));
 
+    }
+
+    @GetMapping("/owner/{ownerId}")
+    @PreAuthorize("hasRole('OWNER')")
+    public ResponseEntity<ApiResponse<List<OrderResponse>>> getOrdersByOwner(@PathVariable UUID ownerId) {
+        List<OrderResponse> orders = orderService.getOrdersByOwner(ownerId);
+
+        return ResponseEntity.ok(new ApiResponse<>(true, "Orders fetched successfully", orders));
     }
 
     @GetMapping("/{orderId}")

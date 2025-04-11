@@ -46,6 +46,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll() // Endpoint bebas akses
                         .requestMatchers("/uploads/**").permitAll()
                         .requestMatchers("/api/stores/**").authenticated()
+                        .requestMatchers("/api/products/**").authenticated()
+                        .requestMatchers("/api/orders/**").authenticated()
                         .requestMatchers("/api/users/**").hasAnyAuthority("ADMIN", "OWNER")// Endpoint akses by admin dan owner
                         .anyRequest().authenticated() // Semua request lain harus login
                 )

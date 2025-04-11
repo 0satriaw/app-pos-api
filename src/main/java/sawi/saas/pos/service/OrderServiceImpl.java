@@ -67,6 +67,18 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
+    public List<OrderResponse> getOrdersByOwner(UUID ownerId) {
+        User user = userService.getCurrentUser();
+        List<Order> orders = orderRepository.findByOwnerId(ownerId);
+
+        return orders.stream()
+                .map(this::mapToOrderResponse)
+                .collect(Collectors.toList());
+
+    }
+
+
+    @Override
     public Page<OrderResponse> getOrdersByStore(String storeId, String status, Pageable pageable){
         User user =  userService.getCurrentUser();
 
@@ -123,7 +135,7 @@ public class OrderServiceImpl implements OrderService{
         User currentUser = userService.getCurrentUser();
 
         if(!currentUser.getRole().getName().equals("CASHIER") &&
-        !currentUser.getRole().getName().equals("ADMIN")) {
+        !currentUser.getRole().getName().equals("OWNER")) {
             throw new AccessDeniedException("You are not authorized to add products to this store");
         }
 

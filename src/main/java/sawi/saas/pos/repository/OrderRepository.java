@@ -1,8 +1,10 @@
 package sawi.saas.pos.repository;
 
+import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import sawi.saas.pos.entity.Order;
 
 import java.util.List;
@@ -12,6 +14,11 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
     List<Order> findByStoreId(UUID storeId);
 
     List <Order> findByUserId(UUID userId);
+
+    @Query("SELECT o FROM Order o " +
+            "JOIN o.store s " +
+            "WHERE s.owner.id = :ownerId")
+    List<Order> findByOwnerId(@Param("ownerId") UUID ownerId);
 
     Page<Order> findByStoreId(UUID storeId, Pageable pageable);
 
