@@ -15,9 +15,11 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
 
     List <Order> findByUserId(UUID userId);
 
-    @Query("SELECT o FROM Order o " +
-            "JOIN o.store s " +
-            "WHERE s.owner.id = :ownerId")
+@Query(value = "SELECT o.* FROM orders o " +
+               "JOIN stores s ON o.store_id = s.id " +
+               "WHERE s.owner_id = :ownerId " +
+               "ORDER BY CASE WHEN o.status = 'PENDING' THEN 1 ELSE 2 END, o.status ASC",
+       nativeQuery = true)
     List<Order> findByOwnerId(@Param("ownerId") UUID ownerId);
 
     Page<Order> findByStoreId(UUID storeId, Pageable pageable);

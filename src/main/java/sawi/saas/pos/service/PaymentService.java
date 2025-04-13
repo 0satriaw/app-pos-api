@@ -50,8 +50,10 @@ public class PaymentService {
         transactionId = midtransResponse.getToken();
 
 
+
         Payment payment = new Payment();
         payment.setTransactionId(transactionId);
+        payment.setRedirectUrl(midtransResponse.getRedirect_url());
         payment.setPaymentMethod("MIDTRANS");
         payment.setOrder(order);
         payment.setAmount(order.getTotalPrice().setScale(0, RoundingMode.CEILING));
@@ -104,6 +106,7 @@ public class PaymentService {
         paymentResponse.setId(payment.getId().toString());
         paymentResponse.setPaymentMethod(payment.getPaymentMethod());
         paymentResponse.setPaymentStatus(payment.getPaymentStatus().toString());
+        paymentResponse.setRedirectUrl(payment.getRedirectUrl());
         paymentResponse.setOrder(orderResponse);
         paymentResponse.setPaymentAmount(order.getTotalPrice().setScale(0, RoundingMode.CEILING).toString());
         paymentResponse.setCreatedAt(LocalDateTime.now());

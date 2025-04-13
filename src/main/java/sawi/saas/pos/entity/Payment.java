@@ -41,6 +41,9 @@ public class Payment {
     @Column(nullable = false, unique = true, length = 100)
     private String transactionId;
 
+    @Column(nullable = false)
+    private String redirectUrl;
+
     @Column
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;

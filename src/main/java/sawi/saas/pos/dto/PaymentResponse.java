@@ -16,6 +16,7 @@ public class PaymentResponse {
     private String paymentStatus;
     private String paymentMethod;
     private String paymentAmount;
+    private String redirectUrl;
     private OrderResponse order;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
