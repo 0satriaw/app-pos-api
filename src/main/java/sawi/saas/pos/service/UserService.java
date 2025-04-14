@@ -12,8 +12,10 @@ import org.springframework.stereotype.Service;
 import sawi.saas.pos.dto.UserRequest;
 import sawi.saas.pos.dto.UserResponse;
 import sawi.saas.pos.entity.Role;
+import sawi.saas.pos.entity.Store;
 import sawi.saas.pos.entity.User;
 import sawi.saas.pos.repository.RoleRepository;
+import sawi.saas.pos.repository.StoreRepository;
 import sawi.saas.pos.repository.UserRepository;
 
 import java.util.List;
@@ -30,6 +32,8 @@ public class UserService {
     Logger logger = LoggerFactory.getLogger(UserService.class);
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    @Autowired
+    private StoreRepository storeRepository;
 
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -48,6 +52,22 @@ public class UserService {
 
         Role role = roleRepository.findByName(request.getRole())
                 .orElseThrow(() -> new EntityNotFoundException("Role not found"));
+
+        if (role.getName().equalsIgnoreCase("CASHIER")) {
+            if (request.getStoreId() == null) {
+                throw new IllegalArgumentException("Cashiers must be assigned to a store.");
+            }
+        } else {
+            if (request.getStoreId() != null) {
+                throw new IllegalArgumentException("Only cashiers can be assigned to a store.");
+            }
+        }
+
+        if(request.getStoreId() != null) {
+            Store store = storeRepository.findById(UUID.fromString(request.getStoreId()))
+                    .orElseThrow(() -> new EntityNotFoundException("Store not found"));
+            user.setStore(store);
+        }
 
         user.setRole(role);
 
@@ -97,6 +117,22 @@ public class UserService {
         Role role = roleRepository.findByName(user.getRole())
                 .orElseThrow(() -> new EntityNotFoundException("Role not found"));
 
+        if (role.getName().equalsIgnoreCase("CASHIER")) {
+            if (user.getStoreId() == null) {
+                throw new IllegalArgumentException("Cashiers must be assigned to a store.");
+            }
+        } else {
+            if (user.getStoreId() != null) {
+                throw new IllegalArgumentException("Only cashiers can be assigned to a store.");
+            }
+        }
+
+        if(user.getStoreId() != null) {
+            Store store = storeRepository.findById(UUID.fromString(user.getStoreId()))
+                    .orElseThrow(() -> new EntityNotFoundException("Store not found"));
+            existingUser.setStore(store);
+        }
+
         existingUser.setRole(role);
 
         User updatedUser = userRepository.save(existingUser);
@@ -110,12 +146,13 @@ public class UserService {
     }
 
     public UserResponse mapToUserResponse(User user) {
+        String storeId = (user.getStore() != null) ? user.getStore().getId().toString() : null;
         return new UserResponse(
           user.getId(),
           user.getEmail(),
           user.getName(),
           user.getRole().getId(),
-          user.getRole().getName()
+          user.getRole().getName(), storeId
         );
     }
 }

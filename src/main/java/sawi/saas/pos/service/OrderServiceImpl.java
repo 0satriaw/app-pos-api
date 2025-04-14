@@ -58,12 +58,14 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public Page<OrderResponse> getOrdersByUser(String userId, Pageable pageable) {
+    public List<OrderResponse> getOrdersByUser(String userId) {
         User user =  userService.getCurrentUser();
 
-        Page<Order> orders = orderRepository.findByUserId(user.getId(), pageable);
+        List<Order> orders = orderRepository.findByUserId(user.getId());
 
-        return orders.map(this::mapToOrderResponse);
+        return orders.stream()
+                .map(this::mapToOrderResponse)
+                .collect(Collectors.toList());
     }
 
     @Override

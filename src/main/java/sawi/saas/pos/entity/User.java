@@ -35,6 +35,10 @@ public class User {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
+    @OneToOne()
+    @JoinColumn(name = "store_id", nullable = true)
+    private Store store;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

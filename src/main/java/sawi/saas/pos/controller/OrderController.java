@@ -53,7 +53,6 @@ public class OrderController {
     }
 
     @GetMapping("/store/{storeId}")
-    @PreAuthorize("hasAnyRole('OWNER','ADMIN')")
     public ResponseEntity<ApiResponse<Page<OrderResponse>>> getOrdersByStore(
             @PathVariable String storeId,
             @RequestParam(required = false) String status,
@@ -70,19 +69,12 @@ public class OrderController {
     }
 
     @GetMapping("/user/{userId}")
-    @PreAuthorize("hasAnyRole('CASHIER','OWNER')")
-    public ResponseEntity<ApiResponse<Page<OrderResponse>>> getOrdersByUser(
-            @PathVariable String userId,
-            @RequestParam(required = false) String status,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "status") String sortBy,
-            @RequestParam(defaultValue = "asc") String sortDir
+    @PreAuthorize("hasAnyRole('CASHIER','OWNER','CASHIER')")
+    public ResponseEntity<ApiResponse<List<OrderResponse>>> getOrdersByUser(
+            @PathVariable String userId
     ){
-        Sort.Direction direction = sortDir.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
 
-        Page<OrderResponse> orders = orderService.getOrdersByUser(userId, pageable);
+        List<OrderResponse> orders = orderService.getOrdersByUser(userId);
         return ResponseEntity.ok(new ApiResponse<>(true, "All orders by user fetched successfully", orders));
     }
 

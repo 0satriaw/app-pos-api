@@ -54,7 +54,7 @@ public class StoreService {
         User currentUser = userService.getCurrentUser();
 
         Page<Store> stores;
-        if(currentUser.getRole().getName().equals("ADMIN")) {
+        if(currentUser.getRole().getName().equals("ADMIN") || currentUser.getRole().getName().equals("CASHIER")) {
             stores = storeRepository.findAll(pageable);
         }else{
             stores = storeRepository.findByOwnerId(currentUser.getId(), pageable);

@@ -17,7 +17,7 @@ public interface OrderService {
 
     Page<OrderResponse> getOrdersByStore(String storeId, String status, Pageable pageable);
 
-    Page<OrderResponse> getOrdersByUser(String userId, Pageable pageable);
+    List<OrderResponse> getOrdersByUser(String userId);
 
     List<OrderResponse> getOrdersByOwner(UUID ownerId);
 

@@ -22,6 +22,8 @@ public class UserRequest {
     @NotBlank(message = "Name is required")
     private String name;
 
+    private String storeId;
+
     @NotBlank(message = "Role is required")
     @Pattern(regexp = "ADMIN|CASHIER|OWNER", message = "Invalid role")
     private String role;

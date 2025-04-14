@@ -15,4 +15,5 @@ public class UserResponse {
     private String name;
     private UUID roleId;
     private String roleName;
+    private String storeId;
 }
