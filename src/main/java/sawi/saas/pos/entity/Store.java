@@ -32,7 +32,7 @@ public class Store {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", nullable = false)
-    private User owner; // Relasi ke User (Pemilik toko)
+    private User owner;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

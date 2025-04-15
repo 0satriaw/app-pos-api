@@ -6,6 +6,7 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -192,6 +193,35 @@ public class OrderServiceImpl implements OrderService{
         return mapToOrderResponse(savedOrder);
     }
 
+    @Override
+    public List<OrderResponse> getRecentOrders() {
+        List<Order> orders = orderRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
+
+        return orders.stream()
+                .map(this::mapToOrderResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OrderResponse> getRecentOrdersByOwner(UUID ownerId) {
+        User user = userService.getCurrentUser();
+        List<Order> orders = orderRepository.findByStore_OwnerIdOrderByCreatedAtDesc(ownerId);
+
+        return orders.stream()
+                .map(this::mapToOrderResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OrderResponse> getRecentOrdersByUser(UUID userId) {
+        User user = userService.getCurrentUser();
+        List<Order> orders = orderRepository.findByUserIdOrderByCreatedAtDesc(userId);
+
+        return orders.stream()
+                .map(this::mapToOrderResponse)
+                .collect(Collectors.toList());
+    }
+
     private OrderResponse mapToOrderResponse(Order order) {
         OrderResponse response = new OrderResponse();
         response.setId(order.getId().toString());
@@ -230,4 +260,6 @@ public class OrderServiceImpl implements OrderService{
                     String.join(", ", validStatus));
         }
     }
+
+
 }

@@ -14,4 +14,7 @@ public interface StoreRepository extends JpaRepository<Store, UUID> {
 
     Page<Store> findByOwnerId(UUID owner, Pageable pageable);
 
-    boolean existsByNameAndOwnerId(String name, UUID ownerId);}
+    boolean existsByNameAndOwnerId(String name, UUID ownerId);
+
+    Long countByOwnerId(UUID ownerId);
+}

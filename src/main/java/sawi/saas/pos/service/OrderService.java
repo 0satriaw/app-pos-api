@@ -22,4 +22,8 @@ public interface OrderService {
     List<OrderResponse> getOrdersByOwner(UUID ownerId);
 
     OrderResponse updateOrderStatus(String orderId, String status);
+
+    List <OrderResponse> getRecentOrders();
+    List <OrderResponse> getRecentOrdersByOwner(UUID ownerId);
+    List <OrderResponse> getRecentOrdersByUser(UUID userId);
 }

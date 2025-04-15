@@ -88,4 +88,36 @@ public class OrderController {
 
         return ResponseEntity.ok(new ApiResponse<>(true, "Order updated successfully", orderResponse));
     }
+
+    @GetMapping("/recent")
+    @PreAuthorize("hasAnyRole('OWNER')")
+    public ResponseEntity<ApiResponse<List<OrderResponse>>> getAllRecentOrders(
+    ){
+
+        List<OrderResponse> orders = orderService.getRecentOrders();
+        return ResponseEntity.ok(new ApiResponse<>(true, "All recent orders fetched successfully", orders));
+    }
+
+    @GetMapping("/recent/owner/{ownerId}")
+    @PreAuthorize("hasAnyRole('OWNER')")
+    public ResponseEntity<ApiResponse<List<OrderResponse>>> getRecentOrdersByOwner(
+            @PathVariable String ownerId
+    ){
+
+        List<OrderResponse> orders = orderService.getRecentOrdersByOwner(UUID.fromString(ownerId));
+        return ResponseEntity.ok(new ApiResponse<>(true, "All recent orders by owner fetched successfully", orders));
+    }
+
+    @GetMapping("/recent/cashier/{userId}")
+    @PreAuthorize("hasAnyRole('CASHIER')")
+    public ResponseEntity<ApiResponse<List<OrderResponse>>> getRecentOrdersByCashier(
+            @PathVariable String userId
+    ){
+
+        List<OrderResponse> orders = orderService.getRecentOrdersByUser(UUID.fromString(userId));
+        return ResponseEntity.ok(new ApiResponse<>(true, "All recent orders by cashier fetched successfully", orders));
+    }
+
+
+
 }
